@@ -63,3 +63,8 @@ bcrypt has a `compare` (async by default which is better for live servers) (or `
     compares the two and if `compare = true` then verification complete
 need an instance method which in OOP makes use of information (Ex properties) specific to that object
     will do this in `User` model to access password property of each user instance
+
+13.3
+Sequelize has a way of dynamically dropping/creating tables to overwrite existing ones to establish new associations/updates
+
+at this point, after dropping and recreating tables, need to repopulate tables since Foreign Key Constraint Error dictates a post MUST have a user
