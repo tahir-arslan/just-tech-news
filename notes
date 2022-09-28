@@ -1,0 +1,39 @@
+Module 13
+Will be using Sequelize (object relational mapping [ORM] library) to simplify MySQL queries,
+add password hashing for secure passwords, connect app to JawsDB (MySQL addon for
+Heroku)
+Also will be using: Dotenv (Node.js module to load env vars from .env file to process.env) and
+bcrypt (Node.js library to allow password hashing)
+Goal: have a working API with data that spans multiple related SQL tables by havin Javascript and SQL communicate with each other via Sequelize.
+
+13.1
+start with initializing node.js, adding packages, installing dependancies:
+- `npm init -y`
+    by using -y, update `package.json` to `"main": "index.js"` to `"main": "server.js"` and add `"start": "node server.js"`
+
+create `.gitignore` and add `node_modules/` and `.DS_Store`
+create `server.js`
+create folders `modles` `routes` `config` `db`
+execute `npm install express sequelize mysql2`
+
+Sequelize: promise based Node.js ORM for Postgres, MySQL, SQLite, and Microsoft SQL Server. 
+    javascript library that works with any dialect of SQL (using MySQL in thsi lesson)
+Biggest benefit is being able to use object-oriented concepts to model database tables using JavaScript classes. Lets us add validators and custom rules to SQL data. 
+    just have to create database, then start Sequelize and it will create tables for us.
+
+create connection to db, then set up env var to hide password so noone can see once uploaded to GitHub
+
+install dotenv `npm install dotenv`
+    then install `.env` at root
+    put in db name, user, pass, and load into `connection.js`
+
+sequelize has its own model class where we can create our own JavaScript class and define cloumns, datatypes, and any other rules we define
+
+define Model object. everytime we create a new User object extended from Model, it will inherit all of Model functionality including methods for CRUD operations. `init( )` execution actually provides context as to how those inherited methods should work
+
+naming convention along with use of HTTP methods follow a famou API architectural pattern called REST (REpresntational State Transfer). building an API in this pattern is called a RESTful API
+    guidelines: name endpoints in a way that describes the data you are interfacing with ex `/api/users`
+    use HTTP methods like `GET, POST, PUT, DELETE` to describe actions being performed to interface with that endpoing ex `GET /api/users`
+    use proper HTTP status codes like `400, 404, 500` for request errs
+
+after creating users and using GET to retrieve user info, will also see psasword. to protect passwords, can update GET to not return password data.
