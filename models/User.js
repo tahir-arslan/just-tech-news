@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require ('../config/connection');
+const bcrypt = require('bcrypt');
 
 // first import `Model` and `DataTypes` objects from Sequelize. `User` extends `Models` and
 // inherits functionality defined to `Model`. then use `init( )` to initialize model's data and config,
@@ -7,7 +8,13 @@ const sequelize = require ('../config/connection');
 // options for table
 
 // create User model
-class User extends Model {}
+class User extends Model {
+    // method to run on instance data per user to check pass
+    checkPassword(loginPw) {
+        // using `this` allows us ot access password which is already stored as hashed string
+        return bcrypt.compareSync(loginPw, this.password);
+    }
+}
 
 // define table columns and configs
 User.init(
@@ -49,6 +56,25 @@ User.init(
         }
     },
     {
+        hooks: {
+            // setup beforeCreate lifecycle "hook" functionality
+            // sync syntax: need 2 local variables to store prehash and posthash data.  
+            // beforeCreate(userData) {
+            //     return bcrypt.hash(userData.password, 10).then(newUserData => {
+            //         return newUserData
+            //     });
+            // }
+            // asynch/await syntax:
+            async beforeCreate(newUserData) {
+                newUserData.password = await bcrypt.hash(newUserData.password, 10);
+                return newUserData;
+            },
+            // hash password during update
+            async beforeUpdate(updatedUserData) {
+                updatedUserData.password = await bcrypt.hash(updatedUserData.password, 10);
+                return updatedUserData;
+            }
+        },
         // table config options (https://sequelize.org/v5/manual/models-definition.html#configuration)
         // pass imported sequelize connection (direct connection to db)
         sequelize,

@@ -37,3 +37,29 @@ naming convention along with use of HTTP methods follow a famou API architectura
     use proper HTTP status codes like `400, 404, 500` for request errs
 
 after creating users and using GET to retrieve user info, will also see psasword. to protect passwords, can update GET to not return password data.
+
+13.2
+MySQL database info is stored as plaintext, aka cleartext. therefore stored in a readable format which is very vulnerable to security breach and being stolen
+therefore in this lesson, will be hashing password
+Hashing: performs a one-way transformation on a password, turning it into another string, called 'hashed password'. Practically impossible to go the other way and turn it back into the original password.
+    the moment an account is created, we must hash the plaintext password before it is stored into the database.    
+        for this, `bcrypt` will be used to perform the hashing function. this has a proven consistent track record of security
+            execute `npm install bcrypt`
+
+documentation recommends to use async function to return the hashed password in a Promise. This will autogen a salt. `saltRounds` parameter is known as the cost factor and controls how many rounds of hashing are done by the bcrypt algorithm. the more hashing rounds, the longer it takes to hash, the more time it takes to crack using brute-force attacks
+
+Hooks (special sequelize functions): aka lifecycle events, hooks are functions that are called before or after calls in Sequelize.
+    to use hooks, must pass in another object labelled `hooks` to `User.init( )` function
+
+Hooks have semantic names that declare when they can be called. in our case, we want to hash password just before user is created and stored in database, so `beforeCreate( )` hook will be used
+
+once password is hashed, we need to allow users to be able to log in. first they will be verified via email and password (since email is more unique and duplicate usernames could be present)
+
+remember: GET carries request parameter appended in URL string, POST carries request parametere in `req.body` (more secure)
+
+bcrypt has a `compare` (async by default which is better for live servers) (or `.compareSync( )` which we will use in this example, sync version) method that checks passwords via two parameters:
+    - plaintext pass from user
+    - hashed password from database
+    compares the two and if `compare = true` then verification complete
+need an instance method which in OOP makes use of information (Ex properties) specific to that object
+    will do this in `User` model to access password property of each user instance
